@@ -37,7 +37,7 @@ namespace Triangles
 
 
 
-        public class Triangle // класс описывающий треугольник
+        class Triangle // класс описывающий треугольник
         {
             public Point p1;
             public Point p2;
