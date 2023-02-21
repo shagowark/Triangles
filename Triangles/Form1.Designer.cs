@@ -55,6 +55,9 @@
             this.drawPanel.Size = new System.Drawing.Size(588, 544);
             this.drawPanel.TabIndex = 0;
             this.drawPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.DrawPanel_Paint);
+            this.drawPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.DrawPanel_MouseDown);
+            this.drawPanel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.DrawPanel_MouseMove);
+            this.drawPanel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.DrawPanel_MouseUp);
             // 
             // toolPanel
             // 
@@ -211,6 +214,7 @@
             this.ClientSize = new System.Drawing.Size(778, 544);
             this.Controls.Add(this.toolPanel);
             this.Controls.Add(this.drawPanel);
+            this.DoubleBuffered = true;
             this.Name = "Form1";
             this.Text = "Form1";
             this.toolPanel.ResumeLayout(false);

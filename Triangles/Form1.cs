@@ -12,6 +12,7 @@ namespace Triangles
 {
     public partial class Form1 : Form
     {
+        
         List<Triangle> triangles = new List<Triangle>();
         public Form1()
         {
@@ -20,10 +21,14 @@ namespace Triangles
 
         // метод для рисования
         private void DrawPanel_Paint(object sender, PaintEventArgs e)
-        {   
+        { 
+            Graphics gr = e.Graphics; // получаем рисовашку
             int width = drawPanel.Width; // получаем ширину и высоту именно drawPanel и используем их
             int height = drawPanel.Height;
-            Graphics g = e.Graphics; // элемент для рисования
+            BufferedGraphicsContext context = new BufferedGraphicsContext(); // создаем буфер 
+            BufferedGraphics buffer = context.Allocate(gr, new Rectangle(0, 0, width, Width));
+            Graphics g = buffer.Graphics;
+
             g.FillRectangle(new SolidBrush(Color.White), 0, 0, width, height); // заполняем все белым
             g.DrawLine(new Pen(Color.Black), 0, height/2, width, height/2);
             g.DrawLine(new Pen(Color.Black), width / 2, 0, width / 2, height);
@@ -33,6 +38,9 @@ namespace Triangles
                g.FillPolygon(new SolidBrush(Color.Purple), points); // с заливкой, сам трегольник
                g.DrawPolygon(new Pen(Color.Black), points); // черная окантовка
             }
+            buffer.Render(gr); // рисуем содержимое буфера
+            g.Dispose();
+            buffer.Dispose();
         }
 
 
@@ -50,7 +58,6 @@ namespace Triangles
                 this.p3 = p3;
             }
         }
-
 
         private void ButtonDraw_Click(object sender, EventArgs e) // обратываем клик на кнопку "рисовать"
         {
@@ -81,6 +88,65 @@ namespace Triangles
         {
             triangles.Clear();
             Refresh();
+        }
+
+        Point currentPoint = new Point(-1, -1);
+        Triangle currentTriangle = null;
+        const int EPS = 5;
+        private void DrawPanel_MouseDown(object sender, MouseEventArgs e)
+        {
+            Point click = new Point(e.X, e.Y);
+            foreach(Triangle triangle in triangles)
+            {
+                if (IsNear(click, triangle.p1))
+                {
+                    currentPoint= triangle.p1;
+                    currentTriangle= triangle;
+                    break;
+                } else if (IsNear(click, triangle.p2))
+                {
+                    currentPoint= triangle.p2;
+                    currentTriangle= triangle;
+                    break;
+                } else if (IsNear(click, triangle.p3))
+                {
+                    currentPoint= triangle.p3;
+                    currentTriangle= triangle;
+                    break;
+                }
+            }
+            Refresh();
+        }
+
+        private void DrawPanel_MouseUp(object sender, MouseEventArgs e)
+        {
+            currentPoint.X = -1;
+            currentPoint.Y = -1;
+            currentTriangle = null;
+            Refresh();
+        }
+
+        private void DrawPanel_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (currentTriangle == null) { 
+                return;
+            }
+            Point currentPosition = new Point(e.X, e.Y);
+            Size shift = new Size(currentPosition.X - currentPoint.X, currentPosition.Y - currentPoint.Y);
+            currentTriangle.p1 += shift;
+            currentTriangle.p2 += shift;
+            currentTriangle.p3 += shift;
+            currentPoint += shift;
+            Refresh();
+            
+        }
+        private Boolean IsNear(Point p1, Point p2)
+        {
+            if (Math.Abs(p1.X - p2.X) <= EPS && Math.Abs(p1.Y - p2.Y) <= EPS)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }
