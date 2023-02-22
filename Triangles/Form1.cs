@@ -20,29 +20,30 @@ namespace Triangles
         }
 
         // метод для рисования
-        private void DrawPanel_Paint(object sender, PaintEventArgs e)
-        { 
-            Graphics gr = e.Graphics; // получаем рисовашку
-            int width = drawPanel.Width; // получаем ширину и высоту именно drawPanel и используем их
-            int height = drawPanel.Height;
-            BufferedGraphicsContext context = new BufferedGraphicsContext(); // создаем буфер 
-            BufferedGraphics buffer = context.Allocate(gr, new Rectangle(0, 0, width, Width));
-            Graphics g = buffer.Graphics;
+        private void MyPictureBox_Paint(object sender, PaintEventArgs e)
+        {
+            int width = myPictureBox.Width; // получаем ширину и высоту именно myPictureBox и используем их
+            int height = myPictureBox.Height;
+            Bitmap myBitmap = new Bitmap(width, height);
+            Graphics g = Graphics.FromImage(myBitmap);
+            //BufferedGraphicsContext context = new BufferedGraphicsContext(); // создаем буфер 
+            //BufferedGraphics buffer = context.Allocate(gr, new Rectangle(0, 0, width, Width));
+            //Graphics g = buffer.Graphics;
 
             g.FillRectangle(new SolidBrush(Color.White), 0, 0, width, height); // заполняем все белым
-            g.DrawLine(new Pen(Color.Black), 0, height/2, width, height/2);
+            g.DrawLine(new Pen(Color.Black), 0, height / 2, width, height / 2);
             g.DrawLine(new Pen(Color.Black), width / 2, 0, width / 2, height);
             foreach (Triangle triangle in triangles) // перебираем все треугольники (можно загуглить foreach)
             {
-               Point[] points = {triangle.p1, triangle.p2, triangle.p3};
-               g.FillPolygon(new SolidBrush(Color.Purple), points); // с заливкой, сам трегольник
-               g.DrawPolygon(new Pen(Color.Black), points); // черная окантовка
+                Point[] points = { triangle.p1, triangle.p2, triangle.p3 };
+                g.FillPolygon(new SolidBrush(Color.Purple), points); // с заливкой, сам трегольник
+                g.DrawPolygon(new Pen(Color.Black), points); // черная окантовка
             }
-            buffer.Render(gr); // рисуем содержимое буфера
+            //buffer.Render(gr); // рисуем содержимое буфера
+            myPictureBox.Image = myBitmap;
             g.Dispose();
-            buffer.Dispose();
+            //buffer.Dispose();
         }
-
 
 
         class Triangle // класс описывающий треугольник
@@ -62,9 +63,9 @@ namespace Triangles
         private void ButtonDraw_Click(object sender, EventArgs e) // обратываем клик на кнопку "рисовать"
         {
             // считываем инфу из полей и создаем по ней новые объекты точек
-            Point p1 = new Point(drawPanel.Width/2 + Int32.Parse(textBoxX1.Text),drawPanel.Height/2 - Int32.Parse(textBoxY1.Text));
-            Point p2 = new Point(drawPanel.Width/2 + Int32.Parse(textBoxX2.Text),drawPanel.Height/2 - Int32.Parse(textBoxY2.Text));
-            Point p3 = new Point(drawPanel.Width/2 + Int32.Parse(textBoxX3.Text),drawPanel.Height/2 - Int32.Parse(textBoxY3.Text));
+            Point p1 = new Point(myPictureBox.Width/2 + Int32.Parse(textBoxX1.Text), myPictureBox.Height/2 - Int32.Parse(textBoxY1.Text));
+            Point p2 = new Point(myPictureBox.Width/2 + Int32.Parse(textBoxX2.Text), myPictureBox.Height/2 - Int32.Parse(textBoxY2.Text));
+            Point p3 = new Point(myPictureBox.Width/2 + Int32.Parse(textBoxX3.Text), myPictureBox.Height/2 - Int32.Parse(textBoxY3.Text));
             // по точкам создаем новый объект треугольника
             Triangle triangle = new Triangle(p1, p2, p3);
             triangles.Add(triangle); // добавляем треугольник в список всех треугольников
@@ -93,32 +94,45 @@ namespace Triangles
         Point currentPoint = new Point(-1, -1);
         Triangle currentTriangle = null;
         const int EPS = 5;
-        private void DrawPanel_MouseDown(object sender, MouseEventArgs e)
+   
+        private Boolean IsNear(Point p1, Point p2)
         {
+            if (Math.Abs(p1.X - p2.X) <= EPS && Math.Abs(p1.Y - p2.Y) <= EPS)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private void MyPictureBox_MouseDown(object sender, MouseEventArgs e)
+        {
+
             Point click = new Point(e.X, e.Y);
-            foreach(Triangle triangle in triangles)
+            foreach (Triangle triangle in triangles)
             {
                 if (IsNear(click, triangle.p1))
                 {
-                    currentPoint= triangle.p1;
-                    currentTriangle= triangle;
+                    currentPoint = triangle.p1;
+                    currentTriangle = triangle;
                     break;
-                } else if (IsNear(click, triangle.p2))
+                }
+                else if (IsNear(click, triangle.p2))
                 {
-                    currentPoint= triangle.p2;
-                    currentTriangle= triangle;
+                    currentPoint = triangle.p2;
+                    currentTriangle = triangle;
                     break;
-                } else if (IsNear(click, triangle.p3))
+                }
+                else if (IsNear(click, triangle.p3))
                 {
-                    currentPoint= triangle.p3;
-                    currentTriangle= triangle;
+                    currentPoint = triangle.p3;
+                    currentTriangle = triangle;
                     break;
                 }
             }
             Refresh();
         }
 
-        private void DrawPanel_MouseUp(object sender, MouseEventArgs e)
+        private void MyPictureBox_MouseUp(object sender, MouseEventArgs e)
         {
             currentPoint.X = -1;
             currentPoint.Y = -1;
@@ -126,9 +140,10 @@ namespace Triangles
             Refresh();
         }
 
-        private void DrawPanel_MouseMove(object sender, MouseEventArgs e)
+        private void MyPictureBox_MouseMove(object sender, MouseEventArgs e)
         {
-            if (currentTriangle == null) { 
+            if (currentTriangle == null)
+            {
                 return;
             }
             Point currentPosition = new Point(e.X, e.Y);
@@ -138,15 +153,8 @@ namespace Triangles
             currentTriangle.p3 += shift;
             currentPoint += shift;
             Refresh();
-            
         }
-        private Boolean IsNear(Point p1, Point p2)
-        {
-            if (Math.Abs(p1.X - p2.X) <= EPS && Math.Abs(p1.Y - p2.Y) <= EPS)
-            {
-                return true;
-            }
-            return false;
-        }
+
+       
     }
 }

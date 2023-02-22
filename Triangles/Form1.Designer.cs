@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.drawPanel = new System.Windows.Forms.Panel();
+            this.myPictureBox = new System.Windows.Forms.PictureBox();
             this.toolPanel = new System.Windows.Forms.Panel();
             this.buttonClear = new System.Windows.Forms.Button();
             this.buttonClearText = new System.Windows.Forms.Button();
@@ -45,19 +46,30 @@
             this.textBoxX2 = new System.Windows.Forms.TextBox();
             this.textBoxY1 = new System.Windows.Forms.TextBox();
             this.textBoxX1 = new System.Windows.Forms.TextBox();
+            this.drawPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.myPictureBox)).BeginInit();
             this.toolPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // drawPanel
             // 
+            this.drawPanel.Controls.Add(this.myPictureBox);
             this.drawPanel.Location = new System.Drawing.Point(1, 1);
             this.drawPanel.Name = "drawPanel";
             this.drawPanel.Size = new System.Drawing.Size(588, 544);
             this.drawPanel.TabIndex = 0;
-            this.drawPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.DrawPanel_Paint);
-            this.drawPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.DrawPanel_MouseDown);
-            this.drawPanel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.DrawPanel_MouseMove);
-            this.drawPanel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.DrawPanel_MouseUp);
+            // 
+            // myPictureBox
+            // 
+            this.myPictureBox.Location = new System.Drawing.Point(0, 0);
+            this.myPictureBox.Name = "myPictureBox";
+            this.myPictureBox.Size = new System.Drawing.Size(588, 544);
+            this.myPictureBox.TabIndex = 0;
+            this.myPictureBox.TabStop = false;
+            this.myPictureBox.Paint += new System.Windows.Forms.PaintEventHandler(this.MyPictureBox_Paint);
+            this.myPictureBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.MyPictureBox_MouseDown);
+            this.myPictureBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MyPictureBox_MouseMove);
+            this.myPictureBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.MyPictureBox_MouseUp);
             // 
             // toolPanel
             // 
@@ -217,6 +229,8 @@
             this.DoubleBuffered = true;
             this.Name = "Form1";
             this.Text = "Form1";
+            this.drawPanel.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.myPictureBox)).EndInit();
             this.toolPanel.ResumeLayout(false);
             this.toolPanel.PerformLayout();
             this.ResumeLayout(false);
@@ -242,6 +256,7 @@
         private System.Windows.Forms.Button buttonClear;
         private System.Windows.Forms.Button buttonClearText;
         private System.Windows.Forms.Button buttonDraw;
+        private System.Windows.Forms.PictureBox myPictureBox;
     }
 }
 
