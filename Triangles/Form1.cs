@@ -25,24 +25,19 @@ namespace Triangles
             int width = myPictureBox.Width; // получаем ширину и высоту именно myPictureBox и используем их
             int height = myPictureBox.Height;
             Bitmap myBitmap = new Bitmap(width, height);
-            Graphics g = Graphics.FromImage(myBitmap);
-            //BufferedGraphicsContext context = new BufferedGraphicsContext(); // создаем буфер 
-            //BufferedGraphics buffer = context.Allocate(gr, new Rectangle(0, 0, width, Width));
-            //Graphics g = buffer.Graphics;
+            Graphics g = Graphics.FromImage(myBitmap); // получаем рисовашку
 
             g.FillRectangle(new SolidBrush(Color.White), 0, 0, width, height); // заполняем все белым
             g.DrawLine(new Pen(Color.Black), 0, height / 2, width, height / 2);
             g.DrawLine(new Pen(Color.Black), width / 2, 0, width / 2, height);
-            foreach (Triangle triangle in triangles) // перебираем все треугольники (можно загуглить foreach)
+            foreach (Triangle triangle in triangles) // перебираем все треугольники
             {
                 Point[] points = { triangle.p1, triangle.p2, triangle.p3 };
                 g.FillPolygon(new SolidBrush(Color.Purple), points); // с заливкой, сам трегольник
                 g.DrawPolygon(new Pen(Color.Black), points); // черная окантовка
             }
-            //buffer.Render(gr); // рисуем содержимое буфера
             myPictureBox.Image = myBitmap;
-            g.Dispose();
-            //buffer.Dispose();
+            g.Dispose();;
         }
 
 
@@ -153,8 +148,6 @@ namespace Triangles
             currentTriangle.p3 += shift;
             currentPoint += shift;
             Refresh();
-        }
-
-       
+        }    
     }
 }
